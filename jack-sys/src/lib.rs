@@ -1058,6 +1058,13 @@ external_library!(
         ) -> ::libc::size_t,
         fn jack_ringbuffer_write_advance( *mut jack_ringbuffer_t,  ::libc::size_t) -> (),
         fn jack_ringbuffer_write_space( *const jack_ringbuffer_t) -> ::libc::size_t,
+        fn jack_get_cycle_times(
+            *const jack_client_t,
+            *mut jack_nframes_t,
+            *mut jack_time_t,
+            *mut jack_time_t,
+            *mut ::libc::c_float
+        ) -> ::libc::c_int,
     varargs:
         fn jack_internal_client_load(
             *mut jack_client_t,
@@ -1103,23 +1110,23 @@ functions:
     fn jack_ringbuffer_reset_size( *mut jack_ringbuffer_t,  ::libc::size_t) -> (),
 );
 
-type jack_get_cycle_times_t = unsafe extern "C" fn(
-    client: *const jack_client_t,
-    current_frames: *mut jack_nframes_t,
-    current_usecs: *mut jack_time_t,
-    next_usecs: *mut jack_time_t,
-    period_usecs: *mut ::libc::c_float,
-) -> ::libc::c_int;
-
-lazy_static! {
-    pub static ref jack_get_cycle_times: Option<jack_get_cycle_times_t> = {
-        unsafe { libloading::Library::new(JACK_LIB) }
-            .ok()
-            .and_then(|lib| unsafe {
-                lib.get::<jack_get_cycle_times_t>(b"jack_get_cycle_times\0")
-                    .ok()
-                    .map(|sym| sym.into_raw())
-                    .map(|sym| *sym.deref() as jack_get_cycle_times_t)
-            })
-    };
-}
+// type jack_get_cycle_times_t = unsafe extern "C" fn(
+//     client: *const jack_client_t,
+//     current_frames: *mut jack_nframes_t,
+//     current_usecs: *mut jack_time_t,
+//     next_usecs: *mut jack_time_t,
+//     period_usecs: *mut ::libc::c_float,
+// ) -> ::libc::c_int;
+//
+// lazy_static! {
+//     pub static ref jack_get_cycle_times: Option<jack_get_cycle_times_t> = {
+//         unsafe { libloading::Library::new(JACK_LIB) }
+//             .ok()
+//             .and_then(|lib| unsafe {
+//                 lib.get::<jack_get_cycle_times_t>(b"jack_get_cycle_times\0")
+//                     .ok()
+//                     .map(|sym| sym.into_raw())
+//                     .map(|sym| *sym.deref() as jack_get_cycle_times_t)
+//             })
+//     };
+// }

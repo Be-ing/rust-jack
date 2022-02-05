@@ -686,14 +686,14 @@ impl ProcessScope {
         let mut next_usecs: Time = 0;
         let mut period_usecs: libc::c_float = 0.0;
 
-        let jack_get_cycle_times = {
-            match *j::jack_get_cycle_times {
-                Some(f) => f,
-                None => return Err(Error::WeakFunctionNotFound),
-            }
-        };
+//         let jack_get_cycle_times = {
+//             match *j::jack_get_cycle_times {
+//                 Some(f) => f,
+//                 None => return Err(Error::WeakFunctionNotFound),
+//             }
+//         };
         let res = unsafe {
-            (jack_get_cycle_times)(
+            (LIB.jack_get_cycle_times)(
                 self.client_ptr(),
                 &mut current_frames,
                 &mut current_usecs,
